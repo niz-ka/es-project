@@ -30,7 +30,7 @@ def index():
                 "match": {
                     "attachment.content": {
                         "query": search_arg,
-                        "analyzer": ANALYZER
+                        # "analyzer": ANALYZER
                     }
                 }
             },
@@ -47,7 +47,8 @@ def index():
         real_filename = doc['_source']['real_filename']
         secure_filename = doc['_source']['secure_filename']
         uploaded = doc['_source']['uploaded']
-        files.append((i + 1, real_filename, secure_filename, uploaded))
+        score = doc['_score']
+        files.append((i + 1, real_filename, secure_filename, uploaded, score))
 
     return render_template('index.html', files=files, search_arg=search_arg)
 
