@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 
+# Remove old version
 docker rm -f elasticsearch
 rm -rf ./elastic-data
+rm -rf ./app/files
+
+# Create  directories with proper perms
+mkdir ./app/files
 mkdir ./elastic-data
 chmod 777 -R ./elastic-data
 
@@ -18,7 +23,10 @@ docker create -p 9200:9200 --name elasticsearch \
 
 docker start elasticsearch
 
-sleep 60
+# Wait for container
+until curl 127.0.0.1:9200 2>/dev/null; do
+  sleep 1
+done
 
 curl -X PUT "localhost:9200/_ingest/pipeline/attachment?pretty" -H 'Content-Type: application/json' -d'
 {
